@@ -13,6 +13,11 @@ express()
 		res.status(200).json({ status: 200, message: 'Hello World!' });
 	})
 
+	.get('https://stats.nba.com/stats/scoreboard', (req, res) => {
+		console.log(req);
+		res.status(200).json({ status: 200, message: 'Hello World!' });
+	})
+
 	.listen(port, () => {
 		console.log(`Example app listening on port ${port}`);
 	});
