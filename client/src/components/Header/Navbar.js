@@ -22,7 +22,7 @@ const Navbar = () => {
 							<Nav to={'/schedule'}>Schedule</Nav>
 						</Item>
 						<Item>
-							<Nav to={'/players'}>Players</Nav>
+							<Nav to={'/team'}>Players</Nav>
 						</Item>
 						<Item>
 							<Nav to={'/teamcreation'}>Team creation</Nav>

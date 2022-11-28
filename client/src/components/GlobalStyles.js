@@ -6,6 +6,8 @@ export default createGlobalStyle`
     *:after {
         box-sizing: border-box;
         -webkit-font-smoothing: antialiased;
+        margin:0;
+        padding:0;
     }
 
     html, body, div,

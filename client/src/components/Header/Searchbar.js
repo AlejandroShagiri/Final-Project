@@ -6,11 +6,11 @@ const Searchbar = () => {
 		<Wrapper>
 			<SearchContainer>
 				<form action='/search'>
-					<label for='searchright'>
+					<StyledLabel for='searchright'>
 						<FaSearch size={25} />
-					</label>
+					</StyledLabel>
 					<input
-						class='search expandright'
+						className='search expandright'
 						id='searchright'
 						type='search'
 						placeholder='Search'
@@ -62,6 +62,13 @@ const SearchContainer = styled.div`
 
 	.expandright:focus {
 		padding: 0 0 0 16px;
+	}
+`;
+
+const StyledLabel = styled.label`
+	cursor: pointer;
+	&:hover {
+		color: #082032;
 	}
 `;
 export default Searchbar;
