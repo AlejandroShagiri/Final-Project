@@ -26,35 +26,64 @@ const Rosters = () => {
 			.catch((err) => console.error(err));
 	}, []);
 
+	const handleClick = (myPlayer) => {
+		console.log('hello');
+		fetch('/api/player', {
+			method: 'POST',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				id: myPlayer.id,
+				userId: '12346',
+				fname: myPlayer.firstname,
+				lname: myPlayer.lastname,
+				jersey: myPlayer.leagues.standard.jersey,
+				position: myPlayer.leagues.standard.pos,
+			}),
+		})
+			.then((res) => res.json())
+			.then((response) => {
+				window.alert('Added to Team creation');
+			})
+
+			.catch((error) => {
+				window.alert(error);
+			});
+	};
+
 	return (
 		<>
+			<h1>Hello</h1>
 			<MainDiv>
-				<h1>All players</h1>
 				<>
 					{players.length !== 0 &&
 						players.response.map((player) => {
-							console.log(player);
 							return (
 								<>
-									<h1></h1>
-									<Container>
-										<List>
-											<ListItem>
-												<PlayerDiv color={color}>
-													<h3>
-														{player.firstname} {player.lastname} |{' '}
-														{player.leagues.standard.pos}
-													</h3>
-													<ButtonIcon>
-														<GiTankTop size={100} />
-													</ButtonIcon>
-													<JerseyNumber>
-														{player.leagues.standard.jersey}
-													</JerseyNumber>
-												</PlayerDiv>
-											</ListItem>
-										</List>
-									</Container>
+									{/* <Container> */}
+									<StyledBtn
+										onClick={(event) => {
+											handleClick(player);
+											event.preventDefault();
+											event.stopPropagation();
+										}}
+									>
+										<PlayerDiv color={color}>
+											<h3>
+												{player.firstname} {player.lastname} |{' '}
+												{player.leagues.standard.pos}
+											</h3>
+											<ButtonIcon>
+												<GiTankTop size={100} />
+											</ButtonIcon>
+											<JerseyNumber>
+												{player.leagues.standard.jersey}
+											</JerseyNumber>
+										</PlayerDiv>
+									</StyledBtn>
+									{/* </Container> */}
 								</>
 							);
 						})}
@@ -64,13 +93,10 @@ const Rosters = () => {
 	);
 };
 
-const MainDiv = styled.div``;
-const Container = styled.div`
-	border: 2px solid red;
-	display: grid;
-
-	/* justify-content: space-evenly;
-	align-items: center; */
+const MainDiv = styled.div`
+	display: flex;
+	width: 100vw;
+	flex-wrap: wrap;
 `;
 
 const ButtonIcon = styled.a`
@@ -83,15 +109,9 @@ const PlayerDiv = styled.div`
 	align-items: center;
 	background-color: #${(props) => props.color};
 	padding: 10px;
+	width: 180px;
+	margin: 10px;
 `;
-
-const List = styled.ul`
-	display: flex;
-	gap: 10px;
-	color: white;
-`;
-
-const ListItem = styled.li``;
 
 const TeamName = styled.h1`
 	color: #c8102e;
@@ -107,6 +127,15 @@ const JerseyNumber = styled.h2`
 	color: black;
 	position: absolute;
 	margin-top: 40px;
+`;
+
+const StyledBtn = styled.button`
+	height: 140px;
+	border: none;
+	&:hover {
+		opacity: 80%;
+		cursor: pointer;
+	}
 `;
 
 export default Rosters;

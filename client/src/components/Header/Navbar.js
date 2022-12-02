@@ -1,16 +1,21 @@
 import { FaSearch, FaUserAlt } from 'react-icons/fa';
+import { MdOutlineSportsHandball } from 'react-icons/md';
 import { SiNba } from 'react-icons/si';
 import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import Searchbar from './Searchbar';
+import SignIn from '../SignIn';
 
 const Navbar = () => {
+	const navigate = useNavigate();
 	return (
 		<>
 			<Container>
 				<Logo>
 					<Nav to={'/'}>
-						<h2>Today</h2>
+						<h2>
+							Game Time <MdOutlineSportsHandball size={25} />
+						</h2>
 					</Nav>
 				</Logo>
 				<ItemContainer>
@@ -33,18 +38,12 @@ const Navbar = () => {
 					</List>
 				</ItemContainer>
 				<BtnContainer>
-					<List>
-						<Item>
-							<BtnIcons>
-								<Searchbar />
-							</BtnIcons>
-						</Item>
-						<Item>
-							<BtnIcons>
-								<FaUserAlt size={25} />
-							</BtnIcons>
-						</Item>
-					</List>
+					<BtnIcons>
+						<Nav to={'/profile'}>
+							<FaUserAlt size={25} />
+						</Nav>
+					</BtnIcons>
+					<SignIn />
 				</BtnContainer>
 			</Container>
 		</>
@@ -58,6 +57,8 @@ const Container = styled.div`
 `;
 const Logo = styled.div`
 	display: flex;
+	justify-content: center;
+	align-items: center;
 	color: #082032;
 `;
 const BtnContainer = styled.div`
@@ -82,16 +83,19 @@ const Item = styled.li`
 	text-decoration: none;
 	margin-left: 2rem;
 	font-weight: bold;
+	justify-content: center;
+	display: flex;
 `;
 
 const BtnIcons = styled.button`
-	border-radius: 10px;
 	color: #a9a9a9;
 	background-color: #f3f4f9;
 	border: none;
 	cursor: pointer;
-	height: 40px;
-	width: 40px;
+	&:hover {
+		color: #082032;
+		cursor: pointer;
+	}
 	&.active {
 		color: #082032;
 	}
@@ -107,6 +111,7 @@ const Nav = styled(NavLink)`
 
 	&:hover {
 		color: #082032;
+		cursor: pointer;
 	}
 	&.active {
 		color: #082032;

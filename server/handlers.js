@@ -18,7 +18,7 @@ const getAllTeams = async (req, res) => {
 		client.close();
 		res.status(200).json({
 			status: 200,
-			message: 'Get-all items successful',
+			message: 'Get-all teams successful',
 			data: result,
 		});
 	} catch (err) {
@@ -30,4 +30,363 @@ const getAllTeams = async (req, res) => {
 	}
 };
 
-module.exports = { getAllTeams };
+const getPlayers = async (req, res) => {
+	const client = new MongoClient(MONGO_URI, options);
+	try {
+		await client.connect();
+		const db = client.db('FINAL');
+		const result = await db.collection('Players').find().toArray();
+
+		client.close();
+		res.status(200).json({
+			status: 200,
+			message: 'Get players successful',
+			data: result,
+		});
+	} catch (err) {
+		console.log('err', err);
+		res.status(400).json({
+			status: 400,
+			message: 'Bad Request',
+		});
+	}
+};
+
+const addPlayers = async (req, res) => {
+	const client = new MongoClient(MONGO_URI, options);
+	try {
+		const newPlayer = req.body;
+
+		await client.connect();
+		const db = client.db('FINAL');
+		const team = await db
+			.collection('Players')
+			.find({ userId: req.body.userId })
+			.toArray();
+		if (team.length >= 6) {
+			return res.status(400).json({ status: 400, message: 'Team full!' });
+		}
+		await db.collection('Players').insertOne({ ...newPlayer });
+		client.close();
+		return res.status(200).json({
+			status: 200,
+			message: 'Player added to team',
+			data: newPlayer,
+		});
+	} catch (err) {
+		return res.status(400).json({ status: 400, message: 'Invalid data!' });
+	}
+};
+
+const updateTeamPlayer = async (req, res) => {
+	const client = new MongoClient(MONGO_URI, options);
+	try {
+		const userId = req.params.userId;
+		const id = req.body.id;
+		const query = { id, userId };
+		const updateTeam = { $set: { ...req.body } };
+		await client.connect();
+		const db = client.db('FINAL');
+		if (id != null) {
+			const cart = await db.collection('Players').find({ id }).toArray();
+			await db.collection('Players').updateOne(query, updateTeam);
+			res.status(200).json({ status: 200, data: cart });
+		} else {
+			res.status(400).json({ status: 400, message: 'No Id Given' });
+		}
+	} catch {
+		return res.status(400).json({ status: 400, message: 'Invalid data!' });
+	}
+	client.close();
+};
+
+const deleteTeamPlayer = async (req, res) => {
+	const client = new MongoClient(MONGO_URI, options);
+	try {
+		const userId = req.params.userId;
+		const id = req.body.id;
+		await client.connect();
+		const db = client.db('FINAL');
+		const result = await db.collection('Players').deleteOne({ id, userId });
+		res.status(201).json({ status: 201, deletedCount: result.deletedCount });
+	} catch (err) {
+		res.status(500).json({ status: 500, message: err.message });
+	}
+	client.close();
+};
+
+const getAllUsers = async (req, res) => {
+	const client = new MongoClient(MONGO_URI, options);
+	try {
+		await client.connect();
+		const db = client.db('FINAL');
+		const result = await db.collection('Users').find().toArray();
+
+		client.close();
+		res.status(200).json({
+			status: 200,
+			message: 'Get-all users successful',
+			data: result,
+		});
+	} catch (err) {
+		res.status(400).json({
+			status: 400,
+			message: 'Bad Request',
+		});
+	}
+};
+
+//creates a new user from the req.body info and sends it to MongoDB
+const createUser = async (req, res) => {
+	try {
+		const newItem = req.body;
+		newItem._id = uuidv4();
+
+		const client = new MongoClient(MONGO_URI, options);
+		await client.connect();
+		const db = client.db('FINAL');
+
+		await db.collection('Users').insertOne(newItem);
+		client.close();
+
+		return res.status(200).json({
+			status: 200,
+			message: 'User Created',
+			data: newItem,
+		});
+	} catch (err) {
+		return res.status(400).json({ status: 400, message: 'Invalid data!' });
+	}
+};
+
+//gets a specific user based on username
+const getUser = async (req, res) => {
+	const userName = req.params.userName;
+
+	try {
+		const client = new MongoClient(MONGO_URI, options);
+		await client.connect();
+		const db = client.db('FINAL');
+
+		const queryObject_Id = { userName: userName };
+		const result = await db.collection('Users').find(queryObject_Id).toArray();
+
+		client.close();
+		res.status(200).json({
+			status: 200,
+			message: 'Get users successful',
+			data: result,
+		});
+	} catch (err) {
+		res.status(400).json({
+			status: 400,
+			message: 'Bad Request',
+		});
+	}
+};
+
+const updateUser = async (req, res) => {
+	const client = new MongoClient(MONGO_URI, options);
+	try {
+		const userId = req.params.userId;
+		const id = req.body.id;
+		const query = { id, userId };
+		const updateTeam = { $set: { ...req.body } };
+		await client.connect();
+		const db = client.db('FINAL');
+		if (id != null) {
+			const cart = await db.collection('Users').find({ id }).toArray();
+			await db.collection('Users').updateOne(query, updateTeam);
+			res.status(200).json({ status: 200, data: cart });
+		} else {
+			res.status(400).json({ status: 400, message: 'No Id Given' });
+		}
+	} catch {
+		return res.status(400).json({ status: 400, message: 'Invalid data!' });
+	}
+	client.close();
+};
+
+const getDreamTeam = async (req, res) => {
+	const client = new MongoClient(MONGO_URI, options);
+	try {
+		await client.connect();
+		const db = client.db('FINAL');
+		const result = await db.collection('DreamTeam').find().toArray();
+
+		client.close();
+		res.status(200).json({
+			status: 200,
+			message: 'Get players successful',
+			data: result,
+		});
+	} catch (err) {
+		console.log('err', err);
+		res.status(400).json({
+			status: 400,
+			message: 'Bad Request',
+		});
+	}
+};
+
+const addToDreamTeam = async (req, res) => {
+	const client = new MongoClient(MONGO_URI, options);
+	try {
+		const newPlayer = req.body;
+
+		await client.connect();
+		const db = client.db('FINAL');
+		const team = await db
+			.collection('Players')
+			.find({ userId: req.body.userId })
+			.toArray();
+		await db.collection('DreamTeam').insertOne({ ...newPlayer });
+		client.close();
+		return res.status(200).json({
+			status: 200,
+			message: 'Player added to team',
+			data: newPlayer,
+		});
+	} catch (err) {
+		return res.status(400).json({ status: 400, message: 'Invalid data!' });
+	}
+};
+
+const updateDreamTeam = async (req, res) => {
+	const client = new MongoClient(MONGO_URI, options);
+	try {
+		const userId = req.params.userId;
+		const id = req.body.id;
+		const query = { id, userId };
+		const updateTeam = { $set: { ...req.body } };
+		await client.connect();
+		const db = client.db('FINAL');
+		if (id != null) {
+			const cart = await db.collection('Players').find({ id }).toArray();
+			await db.collection('DreamTeam').updateOne(query, updateTeam);
+			res.status(200).json({ status: 200, data: cart });
+		} else {
+			res.status(400).json({ status: 400, message: 'No Id Given' });
+		}
+	} catch {
+		return res.status(400).json({ status: 400, message: 'Invalid data!' });
+	}
+	client.close();
+};
+
+const deleteTeam = async (req, res) => {
+	const client = new MongoClient(MONGO_URI, options);
+	try {
+		const userId = req.params.userId;
+		const id = req.body.id;
+		await client.connect();
+		const db = client.db('FINAL');
+		const result = await db.collection('DreamTeam').deleteOne({ id, userId });
+		res.status(201).json({ status: 201, deletedCount: result.deletedCount });
+	} catch (err) {
+		res.status(500).json({ status: 500, message: err.message });
+	}
+	client.close();
+};
+
+const getFavourite = async (req, res) => {
+	const client = new MongoClient(MONGO_URI, options);
+	try {
+		await client.connect();
+		const db = client.db('FINAL');
+		const result = await db.collection('Favourite').find().toArray();
+
+		client.close();
+		res.status(200).json({
+			status: 200,
+			message: 'Got favourite team',
+			data: result,
+		});
+	} catch (err) {
+		console.log('err', err);
+		res.status(400).json({
+			status: 400,
+			message: 'Bad Request',
+		});
+	}
+};
+
+const addFavourite = async (req, res) => {
+	const client = new MongoClient(MONGO_URI, options);
+	try {
+		const newTeam = req.body;
+
+		await client.connect();
+		const db = client.db('FINAL');
+		const team = await db
+			.collection('Favourite')
+			.find({ userId: req.body.userId })
+			.toArray();
+		await db.collection('Favourite').insertOne({ ...newTeam });
+		client.close();
+		return res.status(200).json({
+			status: 200,
+			message: 'Team added to favourite',
+			data: newTeam,
+		});
+	} catch (err) {
+		return res.status(400).json({ status: 400, message: 'Invalid data!' });
+	}
+};
+
+const updateFavourite = async (req, res) => {
+	const client = new MongoClient(MONGO_URI, options);
+	try {
+		const userId = req.params.userId;
+		const id = req.body.id;
+		const query = { id, userId };
+		const updateTeam = { $set: { ...req.body } };
+		await client.connect();
+		const db = client.db('FINAL');
+		if (id != null) {
+			const cart = await db.collection('Favourite').find({ id }).toArray();
+			await db.collection('Favourite').updateOne(query, updateTeam);
+			res.status(200).json({ status: 200, data: cart });
+		} else {
+			res.status(400).json({ status: 400, message: 'No Id Given' });
+		}
+	} catch {
+		return res.status(400).json({ status: 400, message: 'Invalid data!' });
+	}
+	client.close();
+};
+
+const deleteFavourite = async (req, res) => {
+	const client = new MongoClient(MONGO_URI, options);
+	try {
+		const userId = req.params.userId;
+		const id = req.body.id;
+		await client.connect();
+		const db = client.db('FINAL');
+		const result = await db.collection('Favourite').deleteOne({ id, userId });
+		res.status(201).json({ status: 201, deletedCount: result.deletedCount });
+	} catch (err) {
+		res.status(500).json({ status: 500, message: err.message });
+	}
+	client.close();
+};
+
+module.exports = {
+	getAllTeams,
+	getPlayers,
+	addPlayers,
+	updateTeamPlayer,
+	deleteTeamPlayer,
+	getAllUsers,
+	getUser,
+	createUser,
+	updateUser,
+	getDreamTeam,
+	addToDreamTeam,
+	updateDreamTeam,
+	deleteTeam,
+	getFavourite,
+	addFavourite,
+	updateFavourite,
+	deleteFavourite,
+};

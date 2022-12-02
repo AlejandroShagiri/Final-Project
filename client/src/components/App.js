@@ -1,9 +1,10 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Archive from './Archive';
+import ArchivePage from './Archive/ArchivePage';
 import GlobalStyles from './GlobalStyles';
 import Navbar from './Header/Navbar';
+import Profile from './Profile';
 import Homepage from './Homepage';
-import Players from './Players';
+
 import Rosters from './Rosters';
 import Schedule from './Schedule';
 import Score from './Score';
@@ -19,10 +20,14 @@ const App = () => {
 				<Route path='/' element={<Homepage />}></Route>
 				<Route path='/score' element={<Score />}></Route>
 				<Route path='/schedule' element={<Schedule />}></Route>
-				<Route path='/team' element={<Teams />}></Route>
-				<Route path='/players' element={<Players />}></Route>
-				<Route path='/teamcreation' element={<TeamCreation />}></Route>
-				<Route path='/archive' element={<Archive />}></Route>
+				<Route path='/team' element={<Teams userId={'12346'} />}></Route>
+
+				<Route
+					path='/teamcreation'
+					element={<TeamCreation userId={'12346'} />}
+				></Route>
+				<Route path='/archive' element={<ArchivePage />}></Route>
+				<Route path='/profile' element={<Profile />}></Route>
 				<Route path='/team/:teamName/:color' element={<Rosters />}></Route>
 			</Routes>
 		</BrowserRouter>
