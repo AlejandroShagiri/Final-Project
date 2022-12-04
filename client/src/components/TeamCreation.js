@@ -18,7 +18,7 @@ const TeamCreation = ({ userId }) => {
 	const [forwards, setForwards] = useState([]);
 	const [center, setCenter] = useState([]);
 	const [myPlayer, setMyPlayer] = useState([]);
-
+	console.log(myTeam);
 	useEffect(() => {
 		fetch(`/api/players/${userId}`)
 			.then((res) => res.json())
@@ -43,17 +43,19 @@ const TeamCreation = ({ userId }) => {
 			});
 	}, []);
 
-	const handleClick = () => {
+	const handleClick = (e) => {
+		console.log(e);
 		fetch(`/api/player/${userId}`, {
 			method: 'DELETE',
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify(),
+			body: JSON.stringify({ id: e.id }),
 		})
 			.then((res) => res.json())
 			.then((data) => {
 				//searches on the index of the userId players and deletes from there
+
 				if (!!data && data.deletedCount === 1) {
 					const index = myPlayer.findIndex((e) => e.userId === userId);
 					myPlayer.splice(index, 1);
@@ -106,12 +108,11 @@ const TeamCreation = ({ userId }) => {
 			setMyPlayer(newPlayers);
 		}
 		console.log(myTeam);
-		console.log(myPlayers);
 	};
 
 	return (
 		<>
-			<h1>Your team!</h1>
+			<Title>Your team!</Title>
 			<Container>
 				<PointGuard>
 					<h1>PG</h1>
@@ -127,9 +128,13 @@ const TeamCreation = ({ userId }) => {
 							})}
 					</select>
 					{myTeam.PG.id ? (
-						<Icon>
-							<GiTankTop size={100} />
-						</Icon>
+						<JerseyContainer>
+							<JerseyName>{myTeam.PG.lname}</JerseyName>
+							<JerseyNumber>{myTeam.PG.jersey}</JerseyNumber>
+							<Icon>
+								<GiTankTop size={200} />
+							</Icon>
+						</JerseyContainer>
 					) : (
 						''
 					)}
@@ -148,9 +153,13 @@ const TeamCreation = ({ userId }) => {
 							})}
 					</select>
 					{myTeam.SG.id ? (
-						<Icon>
-							<GiTankTop size={100} />
-						</Icon>
+						<JerseyContainer>
+							<JerseyName>{myTeam.SG.lname}</JerseyName>
+							<JerseyNumber>{myTeam.SG.jersey}</JerseyNumber>
+							<Icon>
+								<GiTankTop size={200} />
+							</Icon>
+						</JerseyContainer>
 					) : (
 						''
 					)}
@@ -169,9 +178,13 @@ const TeamCreation = ({ userId }) => {
 							})}
 					</select>
 					{myTeam.SF.id ? (
-						<Icon>
-							<GiTankTop size={100} />
-						</Icon>
+						<JerseyContainer>
+							<JerseyName>{myTeam.SF.lname}</JerseyName>
+							<JerseyNumber>{myTeam.SF.jersey}</JerseyNumber>
+							<Icon>
+								<GiTankTop size={200} />
+							</Icon>
+						</JerseyContainer>
 					) : (
 						''
 					)}
@@ -190,9 +203,13 @@ const TeamCreation = ({ userId }) => {
 							})}
 					</select>
 					{myTeam.PF.id ? (
-						<Icon>
-							<GiTankTop size={100} />
-						</Icon>
+						<JerseyContainer>
+							<JerseyName>{myTeam.PF.lname}</JerseyName>
+							<JerseyNumber>{myTeam.PF.jersey}</JerseyNumber>
+							<Icon>
+								<GiTankTop size={200} />
+							</Icon>
+						</JerseyContainer>
 					) : (
 						''
 					)}
@@ -211,9 +228,13 @@ const TeamCreation = ({ userId }) => {
 							})}
 					</select>
 					{myTeam.C.id ? (
-						<Icon>
-							<GiTankTop size={100} />
-						</Icon>
+						<JerseyContainer>
+							<JerseyName>{myTeam.C.lname}</JerseyName>
+							<JerseyNumber>{myTeam.C.jersey}</JerseyNumber>
+							<Icon>
+								<GiTankTop size={200} />
+							</Icon>
+						</JerseyContainer>
 					) : (
 						''
 					)}
@@ -232,9 +253,15 @@ const TeamCreation = ({ userId }) => {
 							})}
 					</select>
 					{myTeam.sixth.id ? (
-						<Icon>
-							<GiTankTop size={100} />
-						</Icon>
+						<div>
+							<JerseyContainer>
+								<JerseyName>{myTeam.sixth.lname}</JerseyName>
+								<JerseyNumber>{myTeam.sixth.jersey}</JerseyNumber>
+								<Icon>
+									<GiTankTop size={200} />
+								</Icon>
+							</JerseyContainer>
+						</div>
 					) : (
 						''
 					)}{' '}
@@ -248,7 +275,7 @@ const TeamCreation = ({ userId }) => {
 							return (
 								<Wrapper>
 									<BtnDiv>
-										<DeleteBtn onClick={handleClick}>
+										<DeleteBtn onClick={() => handleClick(player)}>
 											<TiDelete size={20} />
 										</DeleteBtn>
 									</BtnDiv>
@@ -267,45 +294,45 @@ const TeamCreation = ({ userId }) => {
 	);
 };
 
+const Title = styled.h1`
+	font-size: x-large;
+	margin: 10px 0 0 20px;
+	text-decoration: underline;
+`;
+
 const Container = styled.div`
 	display: flex;
 	justify-content: space-evenly;
-	border: 2px solid red;
+	margin-top: 80px;
 `;
 
 const PointGuard = styled.div`
 	text-align: center;
-	border: 2px solid black;
 	width: calc(100% / 6);
 	height: 400px;
 `;
 const ShootingGuard = styled.div`
 	text-align: center;
-	border: 2px solid green;
 	width: calc(100% / 6);
 	height: 400px;
 `;
 const SmallForward = styled.div`
 	text-align: center;
-	border: 2px solid blue;
 	width: calc(100% / 6);
 	height: 400px;
 `;
 const PowerForward = styled.div`
 	text-align: center;
-	border: 2px solid orange;
 	width: calc(100% / 6);
 	height: 400px;
 `;
 const Center = styled.div`
 	text-align: center;
-	border: 2px solid yellow;
 	width: calc(100% / 6);
 	height: 400px;
 `;
 const Bench = styled.div`
 	text-align: center;
-	border: 2px solid pink;
 	width: calc(100% / 6);
 	height: 400px;
 `;
@@ -339,5 +366,26 @@ const BtnDiv = styled.div`
 
 const Icon = styled.div`
 	margin-top: 80px;
+	color: #5f9df7;
+`;
+
+const JerseyContainer = styled.div`
+	position: relative;
+`;
+
+const JerseyName = styled.h2`
+	position: absolute;
+	color: #fff7e9;
+	top: 45%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+`;
+const JerseyNumber = styled.h1`
+	font-size: xx-large;
+	position: absolute;
+	color: #fff7e9;
+	top: 65%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 `;
 export default TeamCreation;

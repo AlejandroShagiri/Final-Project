@@ -14,6 +14,7 @@ const {
 	createUser,
 	getUser,
 	updateUser,
+	deleteUser,
 	getDreamTeam,
 	addToDreamTeam,
 	updateDreamTeam,
@@ -21,7 +22,7 @@ const {
 	getFavourite,
 	addFavourite,
 	updateFavourite,
-	deleteFavourite,
+	// deleteFavourite,
 } = require('./handlers');
 
 express()
@@ -41,13 +42,14 @@ express()
 
 	.get('/api/users', getAllUsers)
 	.post('/api/users', createUser)
-	.get('/api/user/:userName', getUser)
-	.patch('/api/user/:userName', updateUser)
+	.get('/api/user/:email', getUser)
+	.patch('/api/user/:email', updateUser)
+	.delete('/api/user/:email', deleteUser)
 
-	.get('/api/favourite/:userId', getFavourite)
-	.post('/api/favourite/:userId', addFavourite)
+	.get('/api/favourite', getFavourite)
+	.post('/api/favourite', addFavourite)
 	.patch('/api/favourite/:userId', updateFavourite)
-	.delete('/api/favourite/:userId', deleteFavourite)
+	// .delete('/api/favourite/:userId', deleteFavourite)
 
 	.get('/api/dreamteam/:userId', getDreamTeam)
 	.post('/api/dreamteam', addToDreamTeam)

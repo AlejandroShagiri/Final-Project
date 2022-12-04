@@ -1,43 +1,67 @@
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import moment from 'moment';
 const Score = () => {
+	const [startDate, setStartDate] = useState(new Date());
 	const [scores, setScores] = useState([]);
+	const [teamArr, setTeamArr] = useState([]);
 	const navigate = useNavigate();
 
-	const options = {
-		method: 'GET',
-		headers: {
-			'X-RapidAPI-Key': 'a19bf6f9ddmsheecbe7891105021p1ee2cdjsn5d9242e66a96',
-			'X-RapidAPI-Host': 'api-nba-v1.p.rapidapi.com',
-		},
-	};
+	useEffect(() => {
+		fetch(`/api/get-teams`)
+			.then((res) => res.json())
+			.then((data) => {
+				setTeamArr(data.data);
+			});
+	}, []);
 
-	// useEffect(() => {
-	// 	fetch('https://api-nba-v1.p.rapidapi.com/games?date=2022-11-29', options)
-	// 		.then((response) => response.json())
-	// 		.then((response) => setScores(response))
-	// 		.catch((err) => console.error(err));
-	// }, []);
+	useEffect(() => {
+		let date = moment(startDate).format(`YYYY-MM-DD`);
+		fetch(
+			`https://www.balldontlie.io/api/v1/games?start_date=${date}&end_date=${date}`
+		)
+			.then((response) => response.json())
+			.then((data) => {
+				setScores(data);
+			})
+			.catch((err) => console.error(err));
+	}, []);
 
 	return (
 		<MainDiv>
 			<h1>Featured Matches</h1>
 			<div>
 				{scores.length !== 0 &&
-					scores.response.map((games) => {
+					teamArr.length !== 0 &&
+					scores.data.map((games) => {
+						console.log(games);
 						return (
 							<Container>
 								<Wrapper>
 									<InfoDiv>
 										<TeamDiv>
-											<ImgStyling src={games.teams.home.logo} />
-											<TeamNames>{games.teams.home.name}</TeamNames>
+											<ImgStyling
+												src={
+													teamArr.find(
+														(team) => team.name === games.home_team.full_name
+													).logo
+												}
+											/>
+											<TeamNames>{games.home_team.name}</TeamNames>
+											<h1>{games.home_team_score}</h1>
 										</TeamDiv>
 
 										<TeamDiv>
-											<ImgStyling src={games.teams.visitors.logo} />
-											<TeamNames>{games.teams.visitors.name}</TeamNames>
+											<ImgStyling
+												src={
+													teamArr.find(
+														(team) => team.name === games.visitor_team.full_name
+													).logo
+												}
+											/>
+											<TeamNames>{games.visitor_team.name}</TeamNames>
+											<h1>{games.visitor_team_score}</h1>
 										</TeamDiv>
 									</InfoDiv>
 									<h2>vs</h2>

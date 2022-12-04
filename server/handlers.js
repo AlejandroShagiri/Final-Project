@@ -1,3 +1,4 @@
+const e = require('express');
 const { MongoClient } = require('mongodb');
 const { v4: uuidv4 } = require('uuid');
 const options = {
@@ -145,15 +146,29 @@ const createUser = async (req, res) => {
 		const client = new MongoClient(MONGO_URI, options);
 		await client.connect();
 		const db = client.db('FINAL');
-
-		await db.collection('Users').insertOne(newItem);
+		let findUser = await db
+			.collection('Users')
+			.findOne({ email: req.body.email });
+		console.log(findUser);
+		if (findUser === null) {
+			const newUser = await db.collection('Users').insertOne(newItem);
+			console.log(newUser);
+			findUser = await db
+				.collection('Users')
+				.findOne({ email: req.body.email });
+			res.status(200).json({
+				status: 200,
+				message: 'User Created',
+				data: findUser,
+			});
+		} else {
+			res.status(400).json({
+				status: 400,
+				message: 'User found',
+				data: findUser,
+			});
+		}
 		client.close();
-
-		return res.status(200).json({
-			status: 200,
-			message: 'User Created',
-			data: newItem,
-		});
 	} catch (err) {
 		return res.status(400).json({ status: 400, message: 'Invalid data!' });
 	}
@@ -161,20 +176,21 @@ const createUser = async (req, res) => {
 
 //gets a specific user based on username
 const getUser = async (req, res) => {
-	const userName = req.params.userName;
+	const email = req.params.email;
 
 	try {
 		const client = new MongoClient(MONGO_URI, options);
 		await client.connect();
 		const db = client.db('FINAL');
 
-		const queryObject_Id = { userName: userName };
-		const result = await db.collection('Users').find(queryObject_Id).toArray();
+		const queryObject = { email };
+		const result = await db.collection('Users').findOne(queryObject);
+		console.log(result);
 
 		client.close();
 		res.status(200).json({
 			status: 200,
-			message: 'Get users successful',
+			message: 'Get user successful',
 			data: result,
 		});
 	} catch (err) {
@@ -188,21 +204,36 @@ const getUser = async (req, res) => {
 const updateUser = async (req, res) => {
 	const client = new MongoClient(MONGO_URI, options);
 	try {
-		const userId = req.params.userId;
-		const id = req.body.id;
-		const query = { id, userId };
+		const email = req.params.email;
+		const _id = req.body._id;
+		const query = { _id, email };
 		const updateTeam = { $set: { ...req.body } };
 		await client.connect();
 		const db = client.db('FINAL');
 		if (id != null) {
-			const cart = await db.collection('Users').find({ id }).toArray();
+			const users = await db.collection('Users').find({ _id }).toArray();
 			await db.collection('Users').updateOne(query, updateTeam);
-			res.status(200).json({ status: 200, data: cart });
+			res.status(200).json({ status: 200, data: users });
 		} else {
 			res.status(400).json({ status: 400, message: 'No Id Given' });
 		}
 	} catch {
 		return res.status(400).json({ status: 400, message: 'Invalid data!' });
+	}
+	client.close();
+};
+
+const deleteUser = async (req, res) => {
+	const client = new MongoClient(MONGO_URI, options);
+	try {
+		const email = req.params.email;
+		const _id = req.body._id;
+		await client.connect();
+		const db = client.db('FINAL');
+		const result = await db.collection('Users').deleteOne({ _id, email });
+		res.status(201).json({ status: 201, deletedCount: result.deletedCount });
+	} catch (err) {
+		res.status(500).json({ status: 500, message: err.message });
 	}
 	client.close();
 };
@@ -314,21 +345,51 @@ const getFavourite = async (req, res) => {
 const addFavourite = async (req, res) => {
 	const client = new MongoClient(MONGO_URI, options);
 	try {
-		const newTeam = req.body;
+		const { email, team } = req.body;
+		// console.log(req.body);
 
 		await client.connect();
 		const db = client.db('FINAL');
-		const team = await db
+		const checkFavs = await db
 			.collection('Favourite')
-			.find({ userId: req.body.userId })
-			.toArray();
-		await db.collection('Favourite').insertOne({ ...newTeam });
+			.findOne({ email, 'team._id': team._id });
+		console.log(checkFavs);
+		if (checkFavs === null) {
+			await db.collection('Favourite').insertOne({ email, team });
+			const favArray = await db
+				.collection('Favourite')
+				.find({ email })
+				.toArray();
+			const mappedFav = favArray.map((fav) => {
+				return fav.team._id;
+			});
+			console.log(mappedFav);
+			res.status(200).json({
+				status: 200,
+				message: 'Team added to favourite',
+				data: favArray,
+				array: mappedFav,
+			});
+		} else {
+			await db
+				.collection('Favourite')
+				.deleteOne({ email, 'team._id': team._id });
+			const favArray = await db
+				.collection('Favourite')
+				.find({ email })
+				.toArray();
+			const mappedFav = favArray.map((fav) => {
+				return fav.team._id;
+			});
+			res.status(202).json({
+				status: 202,
+				message: 'Team removed',
+				data: favArray,
+				array: mappedFav,
+			});
+		}
+
 		client.close();
-		return res.status(200).json({
-			status: 200,
-			message: 'Team added to favourite',
-			data: newTeam,
-		});
 	} catch (err) {
 		return res.status(400).json({ status: 400, message: 'Invalid data!' });
 	}
@@ -356,20 +417,20 @@ const updateFavourite = async (req, res) => {
 	client.close();
 };
 
-const deleteFavourite = async (req, res) => {
-	const client = new MongoClient(MONGO_URI, options);
-	try {
-		const userId = req.params.userId;
-		const id = req.body.id;
-		await client.connect();
-		const db = client.db('FINAL');
-		const result = await db.collection('Favourite').deleteOne({ id, userId });
-		res.status(201).json({ status: 201, deletedCount: result.deletedCount });
-	} catch (err) {
-		res.status(500).json({ status: 500, message: err.message });
-	}
-	client.close();
-};
+// const deleteFavourite = async (req, res) => {
+// 	const client = new MongoClient(MONGO_URI, options);
+// 	try {
+// 		const userId = req.params.userId;
+// 		const id = req.body.id;
+// 		await client.connect();
+// 		const db = client.db('FINAL');
+// 		const result = await db.collection('Favourite').deleteOne({ id, userId });
+// 		res.status(201).json({ status: 201, deletedCount: result.deletedCount });
+// 	} catch (err) {
+// 		res.status(500).json({ status: 500, message: err.message });
+// 	}
+// 	client.close();
+// };
 
 module.exports = {
 	getAllTeams,
@@ -381,6 +442,7 @@ module.exports = {
 	getUser,
 	createUser,
 	updateUser,
+	deleteUser,
 	getDreamTeam,
 	addToDreamTeam,
 	updateDreamTeam,
@@ -388,5 +450,5 @@ module.exports = {
 	getFavourite,
 	addFavourite,
 	updateFavourite,
-	deleteFavourite,
+	// deleteFavourite,
 };

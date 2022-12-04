@@ -120,39 +120,41 @@ const ArchivePage = () => {
 
 	return (
 		<>
-			<form onSubmit={handleSubmit}>
-				<select
+			<FormStyling onSubmit={handleSubmit}>
+				<SelectStyling
 					onChange={(e) => {
 						handleSelectChange(e);
 					}}
 				>
-					<option>What are you looking for? </option>
-					<option value={'games'}>Games</option>
-					<option value={'players'}>Player</option>
-				</select>
+					<OptionStyling>What are you looking for? </OptionStyling>
+					<OptionStyling value={'games'}>Games</OptionStyling>
+					<OptionStyling value={'players'}>Player</OptionStyling>
+				</SelectStyling>
 				{dropDownDetailOptions && dropDownDetailOptions.length >= 1 ? (
-					<select onChange={handleDetailSelectChange}>
-						<option></option>
+					<SelectStyling onChange={handleDetailSelectChange}>
+						<OptionStyling></OptionStyling>
 						{dropDownDetailOptions.map((choice) => {
 							return (
-								<option value={choice.value}>{choice.friendlyName}</option>
+								<OptionStyling value={choice.value}>
+									{choice.friendlyName}
+								</OptionStyling>
 							);
 						})}
-					</select>
+					</SelectStyling>
 				) : (
 					// select with disabled option
 					''
 				)}
 				{dropDownDetail && dropDownDetail.length >= 1 ? (
 					<>
-						<label for='searchright'></label>
-						<input
+						<LabelStyling for='searchright'></LabelStyling>
+						<InputStyling
 							className='search expandright'
 							id='searchright'
 							type='search'
 							placeholder='Search'
 							onChange={handleInputChange}
-						></input>
+						></InputStyling>
 						<BtnStyle type='submit'>
 							<FaSearch size={25} />
 						</BtnStyle>
@@ -160,7 +162,7 @@ const ArchivePage = () => {
 				) : (
 					''
 				)}
-			</form>
+			</FormStyling>
 
 			{test === 'games' ? (
 				<>
@@ -192,6 +194,7 @@ const ArchivePage = () => {
 };
 
 const BtnStyle = styled.button`
+	margin-left: 10px;
 	background-color: #f3f4f9;
 	border: none;
 	color: #082032;
@@ -199,5 +202,37 @@ const BtnStyle = styled.button`
 	&:hover {
 		color: gray;
 	}
+`;
+
+const SelectStyling = styled.select`
+	width: 300px;
+	margin: 10px;
+	background-color: lightgray;
+	border-radius: 5px;
+	padding: 10px;
+	font-size: large;
+`;
+
+const FormStyling = styled.form`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+`;
+const LabelStyling = styled.label``;
+const InputStyling = styled.input`
+	background-color: lightgray;
+	display: flex;
+	border-radius: 15px;
+	outline: none;
+	border: none;
+	padding: 10px;
+	margin: 4px 2px;
+	height: 50%;
+	width: 30%;
+	font-size: large;
+`;
+
+const OptionStyling = styled.option`
+	margin: 15px;
 `;
 export default ArchivePage;

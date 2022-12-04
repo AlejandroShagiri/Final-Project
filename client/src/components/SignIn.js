@@ -4,8 +4,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 const SignIn = () => {
 	const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
-	const [users, setUsers] = useState([]);
-	console.log(user);
+	const [userData, setUserData] = useState([]);
 
 	useEffect(() => {
 		if (isAuthenticated) {
@@ -24,8 +23,7 @@ const SignIn = () => {
 			})
 				.then((res) => res.json())
 				.then((data) => {
-					console.log(data);
-					setUsers(data);
+					setUserData(data);
 				})
 				.catch((error) => {
 					window.alert(error);
