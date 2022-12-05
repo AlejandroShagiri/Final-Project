@@ -11,34 +11,34 @@ const Homepage = () => {
 	const options = {
 		method: 'GET',
 		headers: {
-			'X-RapidAPI-Key': REACT_APP_NBAKEY,
+			'X-RapidAPI-Key': 'a19bf6f9ddmsheecbe7891105021p1ee2cdjsn5d9242e66a96',
 			'X-RapidAPI-Host': 'api-nba-v1.p.rapidapi.com',
 		},
 	};
 
-	// useEffect(() => {
-	// 	fetch(
-	// 		'https://api-nba-v1.p.rapidapi.com/standings?league=standard&season=2022&conference=east',
-	// 		options
-	// 	)
-	// 		.then((response) => response.json())
-	// 		.then((response) => {
-	// 			setStandingEast(response.response);
-	// 		})
-	// 		.catch((err) => console.error(err));
-	// }, []);
+	useEffect(() => {
+		fetch(
+			'https://api-nba-v1.p.rapidapi.com/standings?league=standard&season=2022&conference=east',
+			options
+		)
+			.then((response) => response.json())
+			.then((response) => {
+				setStandingEast(response.response);
+			})
+			.catch((err) => console.error(err));
+	}, []);
 
-	// useEffect(() => {
-	// 	fetch(
-	// 		'https://api-nba-v1.p.rapidapi.com/standings?league=standard&season=2022&conference=west',
-	// 		options
-	// 	)
-	// 		.then((response) => response.json())
-	// 		.then((response) => {
-	// 			setStandingWest(response.response);
-	// 		})
-	// 		.catch((err) => console.error(err));
-	// }, []);
+	useEffect(() => {
+		fetch(
+			'https://api-nba-v1.p.rapidapi.com/standings?league=standard&season=2022&conference=west',
+			options
+		)
+			.then((response) => response.json())
+			.then((response) => {
+				setStandingWest(response.response);
+			})
+			.catch((err) => console.error(err));
+	}, []);
 
 	useEffect(() => {
 		fetch(`/api/get-teams`)

@@ -10,7 +10,7 @@ const Rosters = () => {
 	const options = {
 		method: 'GET',
 		headers: {
-			'X-RapidAPI-Key': REACT_APP_NBAKEY,
+			'X-RapidAPI-Key': 'a19bf6f9ddmsheecbe7891105021p1ee2cdjsn5d9242e66a96',
 			'X-RapidAPI-Host': 'api-nba-v1.p.rapidapi.com',
 		},
 	};
