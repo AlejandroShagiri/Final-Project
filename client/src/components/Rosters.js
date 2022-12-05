@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { NavLink, useParams } from 'react-router-dom';
 import { GiTankTop } from 'react-icons/gi';
+const { REACT_APP_NBAKEY } = process.env;
 
 const Rosters = () => {
 	const { teamName, color } = useParams();
@@ -9,7 +10,7 @@ const Rosters = () => {
 	const options = {
 		method: 'GET',
 		headers: {
-			'X-RapidAPI-Key': 'a19bf6f9ddmsheecbe7891105021p1ee2cdjsn5d9242e66a96',
+			'X-RapidAPI-Key': REACT_APP_NBAKEY,
 			'X-RapidAPI-Host': 'api-nba-v1.p.rapidapi.com',
 		},
 	};
