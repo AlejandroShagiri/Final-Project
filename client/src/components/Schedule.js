@@ -15,12 +15,11 @@ const Schedule = () => {
 			.then((res) => res.json())
 			.then((data) => {
 				setTeamArr(data.data);
-				console.log(data);
 			});
 	}, []);
 
-	const dayGame = () => {
-		let date = moment(startDate).format(`YYYY-MM-DD`);
+	const dayGame = (aDate) => {
+		let date = moment(aDate).format(`YYYY-MM-DD`);
 		fetch(
 			`https://www.balldontlie.io/api/v1/games?start_date=${date}&end_date=${date}`
 		)
@@ -32,21 +31,21 @@ const Schedule = () => {
 	};
 
 	return (
-		<div>
+		<MainDiv>
 			<h1>Please chose a date</h1>
 			<DatePicker
 				selected={startDate}
 				onChange={(date) => {
 					setScores([]);
 					setStartDate(date);
-					dayGame();
+					dayGame(date);
 				}}
 			/>
-			<MainDiv>
+			<GamesDiv>
 				<div>
 					{scores.length !== 0 &&
+						teamArr.length !== 0 &&
 						scores.data.map((games) => {
-							console.log(games.home_team.full_name);
 							return (
 								<Container>
 									<Wrapper>
@@ -60,6 +59,7 @@ const Schedule = () => {
 													}
 												/>
 												<TeamNames>{games.home_team.full_name}</TeamNames>
+												<h1>{games.home_team_score}</h1>
 											</TeamDiv>
 
 											<TeamDiv>
@@ -72,6 +72,7 @@ const Schedule = () => {
 													}
 												/>
 												<TeamNames>{games.visitor_team.full_name}</TeamNames>
+												<h1>{games.visitor_team_score}</h1>
 											</TeamDiv>
 										</InfoDiv>
 										<h2>vs</h2>
@@ -80,12 +81,15 @@ const Schedule = () => {
 							);
 						})}
 				</div>
-			</MainDiv>
-		</div>
+			</GamesDiv>
+		</MainDiv>
 	);
 };
 
 const MainDiv = styled.div`
+	margin: 0 15px;
+`;
+const GamesDiv = styled.div`
 	height: 90vh;
 `;
 
@@ -129,5 +133,18 @@ const TeamDiv = styled.div`
 	justify-content: center;
 	align-items: center;
 	flex: 1;
+`;
+
+const Btn = styled.button`
+	border: none;
+	outline: none;
+	border-radius: 30px;
+	background-color: #3ec70b;
+	padding: 10px 15px;
+
+	color: white;
+	&:hover {
+		color: #082032;
+	}
 `;
 export default Schedule;

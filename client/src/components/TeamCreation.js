@@ -18,7 +18,6 @@ const TeamCreation = ({ userId }) => {
 	const [forwards, setForwards] = useState([]);
 	const [center, setCenter] = useState([]);
 	const [myPlayer, setMyPlayer] = useState([]);
-	console.log(myTeam);
 	useEffect(() => {
 		fetch(`/api/players/${userId}`)
 			.then((res) => res.json())
@@ -44,7 +43,6 @@ const TeamCreation = ({ userId }) => {
 	}, []);
 
 	const handleClick = (e) => {
-		console.log(e);
 		fetch(`/api/player/${userId}`, {
 			method: 'DELETE',
 			headers: {
@@ -66,48 +64,41 @@ const TeamCreation = ({ userId }) => {
 
 	const handleChange = (id, position) => {
 		if (position === 'PG') {
-			console.log('here', myPlayers, id, typeof id);
 			myTeam.PG = myPlayers.find((player) => player.id === parseInt(id));
 			const index = myPlayers.findIndex((player) => player.id === parseInt(id));
 			const newPlayers = myPlayers.splice(index, 1);
 			setMyPlayer(newPlayers);
 		}
 		if (position === 'SG') {
-			console.log('here', myPlayers, id, typeof id);
 			myTeam.SG = myPlayers.find((player) => player.id === parseInt(id));
 			const index = myPlayers.findIndex((player) => player.id === parseInt(id));
 			const newPlayers = myPlayers.splice(index, 1);
 			setMyPlayer(newPlayers);
 		}
 		if (position === 'SF') {
-			console.log('here', myPlayers, id, typeof id);
 			myTeam.SF = myPlayers.find((player) => player.id === parseInt(id));
 			const index = myPlayers.findIndex((player) => player.id === parseInt(id));
 			const newPlayers = myPlayers.splice(index, 1);
 			setMyPlayer(newPlayers);
 		}
 		if (position === 'PF') {
-			console.log('here', myPlayers, id, typeof id);
 			myTeam.PF = myPlayers.find((player) => player.id === parseInt(id));
 			const index = myPlayers.findIndex((player) => player.id === parseInt(id));
 			const newPlayers = myPlayers.splice(index, 1);
 			setMyPlayer(newPlayers);
 		}
 		if (position === 'C') {
-			console.log('here', myPlayers, id, typeof id);
 			myTeam.C = myPlayers.find((player) => player.id === parseInt(id));
 			const index = myPlayers.findIndex((player) => player.id === parseInt(id));
 			const newPlayers = myPlayers.splice(index, 1);
 			setMyPlayer(newPlayers);
 		}
 		if (position === 'sixth') {
-			console.log('here', myPlayers, id, typeof id);
 			myTeam.sixth = myPlayers.find((player) => player.id === parseInt(id));
 			const index = myPlayers.findIndex((player) => player.id === parseInt(id));
 			const newPlayers = myPlayers.splice(index, 1);
 			setMyPlayer(newPlayers);
 		}
-		console.log(myTeam);
 	};
 
 	return (

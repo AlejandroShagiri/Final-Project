@@ -11,7 +11,7 @@ const {
 	updateTeamPlayer,
 	deleteTeamPlayer,
 	getAllUsers,
-	createUser,
+	logginIn,
 	getUser,
 	updateUser,
 	deleteUser,
@@ -41,7 +41,7 @@ express()
 	.delete('/api/player/:userId', deleteTeamPlayer)
 
 	.get('/api/users', getAllUsers)
-	.post('/api/users', createUser)
+	.post('/api/users', logginIn)
 	.get('/api/user/:email', getUser)
 	.patch('/api/user/:email', updateUser)
 	.delete('/api/user/:email', deleteUser)

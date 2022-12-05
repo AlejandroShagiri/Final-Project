@@ -35,7 +35,6 @@ const Score = () => {
 				{scores.length !== 0 &&
 					teamArr.length !== 0 &&
 					scores.data.map((games) => {
-						console.log(games);
 						return (
 							<Container>
 								<Wrapper>
@@ -65,15 +64,6 @@ const Score = () => {
 										</TeamDiv>
 									</InfoDiv>
 									<h2>vs</h2>
-									<Btn
-										onClick={(event) => {
-											navigate('/scoreboard');
-											event.preventDefault();
-											event.stopPropagation();
-										}}
-									>
-										See more
-									</Btn>
 								</Wrapper>
 							</Container>
 						);
@@ -85,6 +75,7 @@ const Score = () => {
 
 const MainDiv = styled.div`
 	height: 90vh;
+	margin: 0 15px;
 `;
 
 const Container = styled.div`
@@ -119,18 +110,6 @@ const ImgStyling = styled.img`
 const TeamNames = styled.h1`
 	max-width: 120px;
 	text-align: center;
-`;
-const Btn = styled.button`
-	border: none;
-	outline: none;
-	border-radius: 30px;
-	background-color: #3ec70b;
-	padding: 10px 15px;
-
-	color: white;
-	&:hover {
-		color: #082032;
-	}
 `;
 
 const TeamDiv = styled.div`

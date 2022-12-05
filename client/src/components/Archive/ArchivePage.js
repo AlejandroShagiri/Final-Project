@@ -61,7 +61,6 @@ const ArchivePage = () => {
 			.then((response) => response.json())
 			.then((data) => {
 				setBallData(data);
-				console.log(data);
 			})
 			.catch((err) => console.error(err));
 	};
@@ -99,7 +98,6 @@ const ArchivePage = () => {
 				let teamId = teams.find((team) =>
 					team.full_name.toLowerCase().includes(searchText.toLowerCase())
 				).id;
-				console.log(teamId);
 				filter = `${dropDownDetail}[]=${teamId}`;
 			} else {
 				filter = `${dropDownDetail}[]=${searchText}`;
@@ -188,7 +186,7 @@ const ArchivePage = () => {
 				</>
 			)}
 
-			<button onClick={nexthundred}>Load Next Page</button>
+			{/* <button onClick={nexthundred}>Load Next Page</button> */}
 		</>
 	);
 };

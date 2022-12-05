@@ -21,13 +21,11 @@ const Rosters = () => {
 			.then((response) => response.json())
 			.then((response) => {
 				setPlayers(response);
-				console.log(response);
 			})
 			.catch((err) => console.error(err));
 	}, []);
 
 	const handleClick = (myPlayer) => {
-		console.log('hello');
 		fetch('/api/player', {
 			method: 'POST',
 			headers: {

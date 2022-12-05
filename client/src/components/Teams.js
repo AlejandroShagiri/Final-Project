@@ -15,7 +15,6 @@ const Teams = ({ userId }) => {
 			.then((res) => res.json())
 			.then((data) => {
 				setTeamArr(data.data);
-				console.log(data);
 				fetch(`/api/favourite`)
 					.then((res) => res.json())
 					.then((data) => {
@@ -25,7 +24,6 @@ const Teams = ({ userId }) => {
 	}, []);
 
 	const handleClick = (e, team) => {
-		console.log(team);
 		e.preventDefault();
 		e.stopPropagation();
 		fetch(`/api/favourite`, {
@@ -43,7 +41,6 @@ const Teams = ({ userId }) => {
 			.then((res) => res.json())
 			.then((response) => {
 				setFavArray(response.array);
-				console.log(response.array);
 			})
 
 			.catch((error) => {
@@ -60,12 +57,10 @@ const Teams = ({ userId }) => {
 				<Container>
 					{teamArr.length !== 0 &&
 						teamArr.map((teams) => {
-							// console.log(favArray);
 							return (
 								<>
 									<ButtonStyle
 										onClick={(event) => {
-											console.log(teams);
 											navigate(`/team/${teams.balldontlieID}/${teams.color}`);
 											event.preventDefault();
 											event.stopPropagation();
@@ -79,7 +74,6 @@ const Teams = ({ userId }) => {
 												e.preventDefault();
 											}}
 										>
-											{console.log(favArray.includes(teams._id))}
 											<AiFillStar size={30} />
 										</Favourite>
 										<Logo src={teams.logo} />

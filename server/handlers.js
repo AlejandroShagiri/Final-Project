@@ -138,7 +138,7 @@ const getAllUsers = async (req, res) => {
 };
 
 //creates a new user from the req.body info and sends it to MongoDB
-const createUser = async (req, res) => {
+const logginIn = async (req, res) => {
 	try {
 		const newItem = req.body;
 		newItem._id = uuidv4();
@@ -149,10 +149,8 @@ const createUser = async (req, res) => {
 		let findUser = await db
 			.collection('Users')
 			.findOne({ email: req.body.email });
-		console.log(findUser);
 		if (findUser === null) {
 			const newUser = await db.collection('Users').insertOne(newItem);
-			console.log(newUser);
 			findUser = await db
 				.collection('Users')
 				.findOne({ email: req.body.email });
@@ -162,9 +160,9 @@ const createUser = async (req, res) => {
 				data: findUser,
 			});
 		} else {
-			res.status(400).json({
-				status: 400,
-				message: 'User found',
+			res.status(200).json({
+				status: 200,
+				message: 'User logged in',
 				data: findUser,
 			});
 		}
@@ -174,7 +172,6 @@ const createUser = async (req, res) => {
 	}
 };
 
-//gets a specific user based on username
 const getUser = async (req, res) => {
 	const email = req.params.email;
 
@@ -185,7 +182,6 @@ const getUser = async (req, res) => {
 
 		const queryObject = { email };
 		const result = await db.collection('Users').findOne(queryObject);
-		console.log(result);
 
 		client.close();
 		res.status(200).json({
@@ -206,14 +202,18 @@ const updateUser = async (req, res) => {
 	try {
 		const email = req.params.email;
 		const _id = req.body._id;
-		const query = { _id, email };
+		const query = { email };
 		const updateTeam = { $set: { ...req.body } };
 		await client.connect();
 		const db = client.db('FINAL');
-		if (id != null) {
-			const users = await db.collection('Users').find({ _id }).toArray();
-			await db.collection('Users').updateOne(query, updateTeam);
-			res.status(200).json({ status: 200, data: users });
+		if (_id != null) {
+			let updateUser = await db
+				.collection('Users')
+				.updateOne(query, updateTeam);
+			if (updateUser.modifiedCount === 1) {
+				let user = await db.collection('Users').findOne({ email });
+				res.status(200).json({ status: 200, data: user });
+			}
 		} else {
 			res.status(400).json({ status: 400, message: 'No Id Given' });
 		}
@@ -231,7 +231,11 @@ const deleteUser = async (req, res) => {
 		await client.connect();
 		const db = client.db('FINAL');
 		const result = await db.collection('Users').deleteOne({ _id, email });
-		res.status(201).json({ status: 201, deletedCount: result.deletedCount });
+		res.status(201).json({
+			status: 201,
+			deletedCount: result.deletedCount,
+			message: 'account deleted',
+		});
 	} catch (err) {
 		res.status(500).json({ status: 500, message: err.message });
 	}
@@ -346,14 +350,11 @@ const addFavourite = async (req, res) => {
 	const client = new MongoClient(MONGO_URI, options);
 	try {
 		const { email, team } = req.body;
-		// console.log(req.body);
-
 		await client.connect();
 		const db = client.db('FINAL');
 		const checkFavs = await db
 			.collection('Favourite')
 			.findOne({ email, 'team._id': team._id });
-		console.log(checkFavs);
 		if (checkFavs === null) {
 			await db.collection('Favourite').insertOne({ email, team });
 			const favArray = await db
@@ -363,7 +364,6 @@ const addFavourite = async (req, res) => {
 			const mappedFav = favArray.map((fav) => {
 				return fav.team._id;
 			});
-			console.log(mappedFav);
 			res.status(200).json({
 				status: 200,
 				message: 'Team added to favourite',
@@ -440,7 +440,7 @@ module.exports = {
 	deleteTeamPlayer,
 	getAllUsers,
 	getUser,
-	createUser,
+	logginIn,
 	updateUser,
 	deleteUser,
 	getDreamTeam,
